@@ -39,6 +39,7 @@ router.post(`/create`, (req, res) => {
 router.post('/login', async (req, res) => {
     const user = await User.findOne({ email : req.body.email});
     const secret = process.env.secret;
+    console.log(user.password, req.body.password);
 
     if (!user) {
         return res.status(400).json({ message : 'User not found'});
@@ -47,7 +48,8 @@ router.post('/login', async (req, res) => {
     if (user && bcrypt.compareSync(req.body.password, user.password)){
         const token = jwt.sign(
             {
-                userId : user.id
+                userId : user.id,
+                isAdmin : user.isAdmin
             },
             secret,
             {expiresIn : process.env.expiresIn}
@@ -105,5 +107,27 @@ router.put('/:id', async(req, res) => {
     res.status(201).json(user);
 })
 
+router.get('/get/count', async (req, res) => {
+    const userCount = await User.countDocuments()
+
+    if (!userCount) {
+        return res.status(201).json({success: false})
+    }
+    res.send({
+        count : userCount
+    })
+})
+
+router.delete('/:id', (req, res) => {
+    User.findByIdAndDelete(req.params.id).then((user) => {
+        if (user) {
+            return res.status(204)
+        }else {
+            return res.status(404).json({success : "false", message : "Not Found"})
+        }
+    }).catch((error) => {
+        return res.status(500).json({error: error.message})
+    })
+})
 
 module.exports = router;

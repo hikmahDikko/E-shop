@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const Product = require('../models/products');
 const mongoose = require('mongoose');
+const Category = require('../models/category');
 
 router.get(`/`, async (req, res) => {
     let filter = {};
@@ -22,7 +23,7 @@ router.post(`/create`, async (req, res) => {
 
     if(!category) return res.status(400).send("No category")
 
-    const product = new Product({
+    let product = new Product({
         name : req.body.name,
         description : req.body.description,
         richDescription : req.body.richDescription,
@@ -86,21 +87,18 @@ router.put('/:id', async(req, res) => {
 
 router.delete('/:id', (req, res) => {
     Product.findByIdAndDelete(req.params.id).then((product) => {
-        res.status(204)
+        if (product) {
+            return res.status(204)
+        }else {
+            return res.status(404).json({success : "false", message : "Not Found"})
+        }
     }).catch((error) => {
-        res.status(500).json({error: error.message})
+        return res.status(500).json({error: error.message})
     })
-
-    if (product) {
-        return res.status(201).json({
-            data : product
-        })
-    }
-    res.status(500).json("Not Found")
 })
 
 router.get('/get/count', async (req, res) => {
-    const productCount = await Product.countDocuments((count) => count)
+    const productCount = await Product.countDocuments()
 
     if (!productCount) {
         return res.status(201).json({success: false})
