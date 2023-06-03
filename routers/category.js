@@ -7,7 +7,7 @@ router.get(`/`, async (req, res) => {
 
     if(!category){
         res.status(404).json({
-            sucess : false
+            success : false
         })
     }
     res.status(201).json(category)
@@ -29,17 +29,15 @@ router.post(`/create`, (req, res) => {
 
 router.delete('/:id', (req, res) => {
     Category.findByIdAndDelete(req.params.id).then((category) => {
-        res.status(204)
+        if (category) {
+            return res.status(204)
+        }else {
+            return res.status(404).json({success : "false", message : "Not Found"})
+        }
     }).catch((error) => {
         res.status(500).json({error: error.message})
     })
 
-    if (category) {
-        return res.status(201).json({
-            data : category
-        })
-    }
-    res.status(500).json("Not Found")
 })
 
 router.get('/:id', async (req, res) => {

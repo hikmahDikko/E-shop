@@ -6,6 +6,7 @@ const mongoose = require('mongoose');
 const productRoute = require('./routers/products');
 const categoryRoute = require('./routers/category');
 const userRoute = require('./routers/user');
+const orderRoute = require('./routers/orders');
 const cors = require("cors");
 const authJwt = require('./helpers/jwt');
 const errorHandler = require('./helpers/errorHandler');
@@ -25,6 +26,7 @@ const url = process.env.API_URL
 app.use(`${url}/products`, productRoute)
 app.use(`${url}/categories`, categoryRoute)
 app.use(`${url}/users`, userRoute)
+app.use(`${url}/orders`, orderRoute)
 
 mongoose.connect(process.env.CONNECTION_STRING).then(() => {
     console.log("connected to DB");
