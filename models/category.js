@@ -1,6 +1,6 @@
 const { mongoose } = require("mongoose");
 
-const categoryShema = new mongoose.Schema({
+const categorySchema = new mongoose.Schema({
     name : {
         type : String,
         required : true
@@ -17,6 +17,14 @@ const categoryShema = new mongoose.Schema({
     }
 })
 
-const Category = mongoose.model('Category', categoryShema);
+categorySchema.virtual('id').get(function () {
+    return this._id;
+});
+
+categorySchema.set('toJSON', {
+    virtuals : true
+});
+
+const Category = mongoose.model('Category', categorySchema);
 
 module.exports = Category;

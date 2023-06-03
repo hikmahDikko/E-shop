@@ -61,7 +61,7 @@ router.put('/:id', async(req, res) => {
     }, {new: true});
 
     if(!category){
-        return res.status(404).json({
+        return res.status(400).json({
             sucess : false
         })
     }

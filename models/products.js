@@ -1,6 +1,6 @@
 const { mongoose } = require("mongoose");
 
-const productShema = new mongoose.Schema({
+const productSchema = new mongoose.Schema({
     name : {
         type : String,
         required : true
@@ -14,7 +14,7 @@ const productShema = new mongoose.Schema({
         default : ''
     },
     image : {
-        tupe : String,
+        type : String,
     },
     images : [{
         type : String
@@ -54,6 +54,12 @@ const productShema = new mongoose.Schema({
     }
 })
 
-const Product = mongoose.model('Product', productShema);
+productSchema.virtual('id').get(function ()  {
+    return this._id;
+});
+
+productSchema.set('toJSON', {virtuals : true});
+
+const Product = mongoose.model('Product', productSchema);
 
 module.exports = Product;
