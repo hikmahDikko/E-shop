@@ -36,7 +36,8 @@ const productSchema = new mongoose.Schema({
         required : true,
         min : 0,
         max : 255
-    },rating : {
+    },
+    rating : {
         type : Number,
         default : 0,
     },
@@ -49,10 +50,15 @@ const productSchema = new mongoose.Schema({
         default : false,
     },
     dateCreated : {
-        type : Number,
+        type : String,
         default : Date.now(),
     }
 })
+
+productSchema.pre(/^find/, function(next){
+    this.populate('category');
+    next();
+});
 
 productSchema.virtual('id').get(function ()  {
     return this._id;

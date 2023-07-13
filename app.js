@@ -35,7 +35,6 @@ mongoose.connect(process.env.CONNECTION_STRING).then(() => {
     console.log(err);
 })
 
-
 app.listen(3000, () => {
-    console.log("Hello World");
+    console.log("Server Connected");
 })

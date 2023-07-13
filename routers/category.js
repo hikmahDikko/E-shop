@@ -3,7 +3,7 @@ const router = express.Router();
 const Category = require('../models/category');
 
 router.get(`/`, async (req, res) => {
-    const category = await category.find()
+    const category = await Category.find()
 
     if(!category){
         res.status(404).json({

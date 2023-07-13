@@ -14,7 +14,7 @@ const FILE_TYPE_MAP = {
 
 const storage = multer.diskStorage({
     destination : function (req, file, cb) {
-        const isValid = FILE_TYPE_MAP(file.mimetype);
+        const isValid = FILE_TYPE_MAP[file.mimetype];
         let uploadError = new Error('Invalid image type');
 
         if(isValid) {
@@ -25,7 +25,7 @@ const storage = multer.diskStorage({
     },
     filename : function (req, file, cb) {
         const filename = file.originalname.split(' ').join('_')
-        const extension = FILE_TYPE_MAP(file.mimetype);
+        const extension = FILE_TYPE_MAP[file.mimetype];
         cb(null, `${filename}-${Date.now()}.${extension}`)
     }
 })
@@ -38,7 +38,7 @@ router.get(`/`, async (req, res) => {
         filter = {category : req.query.categories.split(',')};
     }
 
-    const product = await Product.find(filter).populate('category').select('name  image')
+    const product = await Product.find(filter).populate('category')
 
     if (!product) {
         return res.status(201).json({success: false})
@@ -56,7 +56,7 @@ router.post(`/create`, upload.single('image'), async (req, res) => {
 
     const filename = req.file.filename;
 
-    const basePath = `${req.protocol}://${req.get('host')}/public/upload/`;
+    const basePath = `${req.protocol}://${req.get('host')}/public/uploads/`;
 
     let product = new Product({
         name : req.body.name,
@@ -107,10 +107,10 @@ router.put('/:id', upload.single('image'), async(req, res) => {
 
     if(file) {
         const filename = file.filename;
-        const basePath = `${req.protocol}://${req.get('host')}/public/upload/`;
+        const basePath = `${req.protocol}://${req.get('host')}/public/uploads/`;
         imagePath = `${basePath}${filename}`;
     }else {
-        imagePath = data.images;
+        imagePath = data.image;
     }
 
     const product = await Product.findByIdAndUpdate(req.params.id, {
@@ -174,7 +174,7 @@ router.put('/gallery-images/:id', upload.array('images', 10), async(req, res) =>
     }
     const files = req.files
     let imagePaths = [];
-    const basePath = `${req.protocol}://${req.get('host')}/public/upload/`;
+    const basePath = `${req.protocol}://${req.get('host')}/public/uploads/`;
 
     if(files){
         files.map(file => {
