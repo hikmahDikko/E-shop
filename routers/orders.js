@@ -2,7 +2,6 @@ const express = require('express');
 const router = express.Router();
 const Order = require('../models/orders');
 const OrderItem = require('../models/orderItems');
-const Category = require('../models/category');
 
 router.get(`/`, async (req, res) => {
     const order = await Order.find().populate('userId', 'name').sort('dateOrdered')
@@ -100,7 +99,7 @@ router.put('/:id', async(req, res) => {
     res.status(201).json(order);
 })
 
-router.get ('/get/total-sales', async(req, res) => {
+router.get('/get/total-sales', async(req, res) => {
     const totalSales = await Order.aggregate([
         { $group: {_id : null, totalSales : {$sum : '$totalPrice'}}}
     ])
@@ -113,7 +112,7 @@ router.get ('/get/total-sales', async(req, res) => {
 })
 
 router.get('/get/count', async (req, res) => {
-    const orderCount = await Order.countDocuments()
+    const orderCount = await Order.countDocuments();
 
     if (!orderCount) {
         return res.status(201).json({success: false})
